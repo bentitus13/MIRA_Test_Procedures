@@ -1,0 +1,130 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsthm, amsfonts, xcolor}
+\usepackage{enumitem}
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{float}
+\usepackage{fancyhdr}
+
+\begin{document}
+	\begin{titlepage}
+		\pagenumbering{Alph}
+		\begin{center}
+			\begin{minipage}{\textwidth}
+				\vspace{2cm}
+				\center{
+					\Huge
+					\textbf{MIRA PCB Testing}
+				}
+			\end{minipage}
+			\vfill
+			\vfill
+			
+			\LARGE
+			\textbf{Written by} \\
+			\Large
+			Ben Titus, RBE/ECE \\			
+			\vfill
+		\end{center}
+	\end{titlepage}
+	
+	%%%% Document begins here %%%%
+	\newpage
+	\pagenumbering{roman}
+	\tableofcontents
+	\newpage
+	\pagenumbering{arabic}
+	
+	\section{Motor Driver}
+	The motor driver consists of a demultiplexer (SN74LVC1G18) and a motor driver (DRV8872) with filter capacitors on the motor voltage and motor driver signal inputs and a pull up resistor on the motor driver error pin. The main purpose of this board is to test how well the pad beneath the chip dissipates heat.
+	
+	\subsection{Smoke Test}
+	Before plugging in the board, make sure the power supply is at 3.3V for logic power and 8.4V for motor power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test, otherwise it passes.
+	
+	\subsection{Motor Driver}
+	The motor driver has inputs of PWM and DIR. PWM controls the speed of the motor and DIR controls the direction of rotation. The first part of this test is to connect the PWM and DIR inputs according to Table \ref{tbl:motor_driver_truth_table}. If the motor function matches the output description or rotates in the opposite directions in both cases, then the board passes this test, otherwise it fails.
+	\begin{table}[H]
+		\centering
+		\label{tbl:motor_driver_truth_table}
+		\caption{Truth table for motor inputs}
+		\begin{tabular}{| c | c | c |}
+			\hline
+			PWM & DIR & Motor function \\
+			\hline
+			0 & X & No movement \\
+			1 & 0 & Rotate clockwise \\ 
+			1 & 1 & Rotate counterclockwise \\
+			\hline
+		\end{tabular}
+	\end{table}
+	The next test requires sending a PWM signal to the board on the PWM line. The signal should be 1kHz and should vary between 0\% and 100\% duty cycle. If the motor speed varies with an increase in duty cycle and the rotation still matches that described in the first test, this test passes, otherwise it fails.
+	
+	\subsection{Current Draw}
+	This test requires using a power resistor or other way of safely drawing high current from the motor driver. This test must be done with a power supply capable of providing at least 3.5A. The voltage and resistance pairs may vary for this test, since specific current draw is required. Measure how long it takes for the board to shut down at different current draws. Possible data points are 1A, 1.5A, 2A, 3A, and 3.5A. %TODO: Add pass/fail criteria
+	
+	\newpage
+	\section{Motor Driver with Current Sensor}
+	\subsection{Smoke Test}
+	Before plugging in the board, make sure the power supply is at 3.3V for logic power and 8.4V for motor power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
+	
+	\subsection{Motor Driver}
+	\label{sec:mdcs_md}
+	The motor driver has inputs of PWM and DIR. PWM controls the speed of the motor and DIR controls the direction of rotation. The first part of this test is to connect the PWM and DIR inputs according to Table \ref{tbl:motor_driver_truth_table}. If the motor function matches the output description or rotates in the opposite directions in both cases, then the board passes this test.
+	
+	The next test requires sending a PWM signal to the board on the PWM line. The signal should be 1kHz and should vary between 0\% and 100\% duty cycle. If the motor speed varies with an increase in duty cycle and the rotation still matches that described in the first test, this test passes, otherwise it fails.
+	
+	\subsection{Current Draw}
+	\label{sec:mdcs_cd}
+	This test requires using a power resistor or other way of safely drawing high current from the motor driver. This test must be done with a power supply capable of providing at least 3.5A. The voltage and resistance pairs may vary for this test, since specific current draw is required. Measure how long it takes for the board to shut down at different current draws. Possible data points are 1A, 1.5A, 2A, 3A, and 3.5A. %TODO: Add pass/fail criteria
+	
+	\subsection{Current Sensor Output}
+	Precision and amount of noise on the current sense output are important for this test. The current sensor needs to output a clean, linear signal that is at least close to the datasheet specified function $Vout = \frac{Vcc}{2}+500mV*I$. The precision should be measured by setting up the motor driver to draw 1A as was done to measure the current draw in Section \ref{sec:mdcs_cd}. Connect the current sense output to a multimeter to measure the voltage. The output should be 3V. Next, connect the board to a motor and have the motor rotate at a varying speed, similar to how was done in Section \ref{sec:mdcs_md} to verify speed control of the motor. The current sense output should be connected to an oscilloscope to see how noisy the signal is. %TODO: Add pass/fail criteria
+	
+	\newpage
+	\section{Load Cell Amplifier}
+	\subsection{Smoke Test}
+	Before plugging in the board, make sure the power supply is at 3.3V for logic power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
+	
+	\subsection{Rails}
+	This section will test whether the amplifier can act as a comparator. 
+	
+	\subsection{Load Cell}
+	
+	\newpage
+	\section{CAN Transceiver}
+	\subsection{Smoke Test}
+	Before plugging in the board, make sure the power supply is at 3.3V for logic power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
+	
+	\subsection{DIP Switches}
+	\subsection{Auto-Disconnect}
+	\subsection{CAN Transceiver}
+	
+	\newpage
+	\section{Joint Board Boosterpack}
+	\subsection{Smoke Test}
+	Before plugging in the board, make sure the power supply is at 3.3V for logic power and 8.4V for motor power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
+	
+	\subsection{Motor Driver}
+	\subsection{Current Sensor Output}
+	\subsection{Amplifier Output Reaches Rails}
+	\subsection{Load Cell}
+	\subsection{DIP Switches}
+	\subsection{Auto-Disconnect}
+	\subsection{CAN Transceiver}
+	
+	\newpage
+	\section{TM4C123GH6PM Dev Board}
+	\subsection{Smoke Test}
+	Before plugging in the board, make sure the power supply is at 3.3V for logic power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
+	
+	\subsection{Upload Code}
+	\subsection{Reset Button}
+	\subsection{Debug Header}
+	
+\end{document}

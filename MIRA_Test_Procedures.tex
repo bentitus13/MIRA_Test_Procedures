@@ -94,7 +94,11 @@
 	\subsection{Rails}
 	This section will test whether the amplifier can act as a comparator. 
 	
+	\subsection{Potentiometer}
+	This section will test the linearity of the amplifier. 
+	
 	\subsection{Load Cell}
+	This section will test how well the amplifier amplifies the load cell force. Careful documentation should be performed here since these values will likely map the measured voltage to force applied in the joint board code.
 	
 	\newpage
 	\section{CAN Transceiver}
@@ -102,21 +106,52 @@
 	Before plugging in the board, make sure the power supply is at 3.3V for logic power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
 	
 	\subsection{DIP Switches}
+	Test that they output HIGH when switched on and NC when switched off.
+	
 	\subsection{Auto-Disconnect}
+	Test that resistance between CANHi and CANLo lines is ~120$\Omega$ when EN Res is not connected or pulled high and high Z when EN Res is grounded. Additionally, test that the CANHi and CANLo lines are floating at about Vcc/2 and are not being pulled down at all.
+	
 	\subsection{CAN Transceiver}
+	Test that the board functions as a transceiver.
 	
 	\newpage
 	\section{Joint Board Boosterpack}
 	\subsection{Smoke Test}
 	Before plugging in the board, make sure the power supply is at 3.3V for logic power and 8.4V for motor power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
+	\label{sec:jbbp_md}
+	The motor driver has inputs of PWM and DIR. PWM controls the speed of the motor and DIR controls the direction of rotation. The first part of this test is to connect the PWM and DIR inputs according to Table \ref{tbl:motor_driver_truth_table}. If the motor function matches the output description or rotates in the opposite directions in both cases, then the board passes this test.
 	
 	\subsection{Motor Driver}
+	\label{sec:jbbp_md}
+	The next test requires sending a PWM signal to the board on the PWM line. The signal should be 1kHz and should vary between 0\% and 100\% duty cycle. If the motor speed varies with an increase in duty cycle and the rotation still matches that described in the first test, this test passes, otherwise it fails.
+	
+	\subsection{Current Draw}
+	\label{sec:jbbp_cd}
+	This test requires using a power resistor or other way of safely drawing high current from the motor driver. This test must be done with a power supply capable of providing at least 3.5A. The voltage and resistance pairs may vary for this test, since specific current draw is required. Measure how long it takes for the board to shut down at different current draws. Possible data points are 1A, 1.5A, 2A, 3A, and 3.5A. %TODO: Add pass/fail criteria
+	
 	\subsection{Current Sensor Output}
-	\subsection{Amplifier Output Reaches Rails}
+	Precision and amount of noise on the current sense output are important for this test. The current sensor needs to output a clean, linear signal that is at least close to the datasheet specified function $Vout = \frac{Vcc}{2}+500mV*I$. The precision should be measured by setting up the motor driver to draw 1A as was done to measure the current draw in Section \ref{sec:jbbp_cd}. Connect the current sense output to a multimeter to measure the voltage. The output should be 3V. Next, connect the board to a motor and have the motor rotate at a varying speed, similar to how was done in Section \ref{sec:jbbp_md} to verify speed control of the motor. The current sense output should be connected to an oscilloscope to see how noisy the signal is. %TODO: Add pass/fail criteria
+	
+	\subsection{Load Cell Amplifier Reaches Rails}
+	This section will test whether the amplifier can act as a comparator. 
+	
+	\subsection{Potentiometer}
+	This section will test the linearity of the amplifier. 
+	
 	\subsection{Load Cell}
+	This section will test how well the amplifier amplifies the load cell force. Careful documentation should be performed here since these values will likely map the measured voltage to force applied in the joint board code.
+	
 	\subsection{DIP Switches}
+	Test that they output HIGH when switched on and NC when switched off.
+	
 	\subsection{Auto-Disconnect}
+	Test that resistance between CANHi and CANLo lines is ~120$\Omega$ when EN Res is not connected or pulled high and high Z when EN Res is grounded. Additionally, test that the CANHi and CANLo lines are floating at about Vcc/2 and are not being pulled down at all.
+	
 	\subsection{CAN Transceiver}
+	Test that the board functions as a transceiver.
+	
+	\subsection{Joint Board Code}
+	Test that the joint board code works on the PCB.
 	
 	\newpage
 	\section{TM4C123GH6PM Dev Board}
@@ -124,7 +159,12 @@
 	Before plugging in the board, make sure the power supply is at 3.3V for logic power and turn the current limit knob down to somewhere around 50mA or less. Turn the supply off and connect the leads to the board. Switch the supply on and see if the over-current light is on. If it is, slowly increase the current limit to no more than 100mA. If the supply is still tripped, the board has failed this test.
 	
 	\subsection{Upload Code}
+	Test that code can be uploaded to the board.
+	
 	\subsection{Reset Button}
+	Test that the reset button resets the board.
+	
 	\subsection{Debug Header}
+	Test that JTAG debugging works with the debugging header.
 	
 \end{document}
